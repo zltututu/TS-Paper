@@ -72,11 +72,11 @@
 
 一个课程是 T 个训练步骤上的训练准则（training criteria）序列：
 
-$C = \langle Q_1, Q_2, ..., Q_T \rangle$
+$$C = \langle Q_1, Q_2, ..., Q_T \rangle$$
 
 其中每个准则 $Q_t(z)$ 是对目标训练分布 $P(z)$ 的重加权：
 
-$Q_t(z) \propto W_t(z)P(z), \forall z \in D$
+$$Q_t(z) \propto W_t(z)P(z), \forall z \in D$$
 
 该定义需满足以下三条性质：
 
@@ -246,33 +246,21 @@ $Q_t(z) \propto W_t(z)P(z), \forall z \in D$
 
 Kumar 等人提出的原始 SPL 算法定义如下。令训练集为 $D = \{x_i, y_i\}_{i=1}^N$，其中 $x_i$ 是输入特征，$y_i$ 是标签。模型 $f_w$ 由参数 $w$ 控制，对样本 $x_i$ 预测输出 $f_w(x_i)$，对应损失为 $l_i = L(f_w(x_i), y_i)$。原始目标是最小化整个训练集上的经验损失：
 
-$$
-\min_w \sum_{i=1}^N l_i + R(w) \tag{6}
-$$
+$$\min_w \sum_{i=1}^N l_i + R(w) \tag{6}$$
 
 其中 $R(w)$ 是正则项，用于防止过拟合（以下分析中略去该项）。SPL 在此基础上引入样本权重向量 $v = [v_1, \dots, v_N]^\top \in [0, 1]^N$，以及称为“学习年龄”（age parameter）的超参数 $\lambda$，控制每轮训练纳入的样本比例。目标函数变为：
 
-$$
-\min_{w, v \in [0, 1]^N} \sum_{i=1}^N v_i l_i + g(v; \lambda) \tag{7}
-$$
+$$\min_{w, v \in [0, 1]^N} \sum_{i=1}^N v_i l_i + g(v; \lambda) \tag{7}$$
 
 其中 $g(v; \lambda)$ 为 SPL 正则项（SP-regularizer），控制样本筛选策略。在原始 SPL 中：
 
-$$
-g(v; \lambda) = -\lambda \sum_{i=1}^N v_i \tag{8}
-$$
+$$g(v; \lambda) = -\lambda \sum_{i=1}^N v_i \tag{8}$$
 
 该目标通常通过交替优化策略（AOS）求解：固定 $w$ 优化 $v$，再固定 $v$ 优化 $w$。其中：
 
 * 固定 $w$ 后，$v_i$ 的最优解为：
 
-$$
-v_i^* =
-\begin{cases}
-1, & l_i < \lambda \\
-0, & \text{否则}
-\end{cases} \tag{11}
-$$
+$$v_i^* =\begin{cases}1, & l_i < \lambda \\0, & \text{否则}\end{cases} \tag{11}$$
 
 * 固定 $v$ 后，用标准梯度下降更新 $w$。
 
@@ -289,9 +277,7 @@ $$
 
 首先，SPL 的目标函数（公式 (7)）可以等价地转换为如下的“潜在目标函数”（latent objective function）：
 
-$$
-\sum_{i=1}^{N} F_\lambda(l_i) = \sum_{i=1}^{N} \int_0^{l_i} v_i^*(\tau, \lambda) \, d\tau \tag{12}
-$$
+$$\sum_{i=1}^{N} F_\lambda(l_i) = \sum_{i=1}^{N} \int_0^{l_i} v_i^*(\tau, \lambda) \, d\tau \tag{12}$$
 
 其中，$v_i^*(\tau, \lambda)$ 是在公式 (9) 中得到的最优解。Meng 等人 \[73] 首先证明：SPL 中使用的交替优化策略（AOS）本质上等价于\*\*最大化-最小化算法（Majorization Minimization, MM）\*\*在上述潜在目标函数上的最小化过程。因此，我们可以利用 MM 理论来分析 SPL 的性质（例如收敛性）。
 
@@ -347,9 +333,7 @@ $$
 
 代表性的多样性先验实例是 **SPL with Diversity（SPLD）** 方法 \[41]，它在硬式正则项上引入了负的 $\ell_{2,1}$-范数，用于避免模型只关注部分数据子集、忽视其他群体中的易学样本：
 
-$$
-g(v; \lambda, \gamma) = -\lambda \sum_{i=1}^{N} v_i - \gamma \sum_{j=1}^{b} \|v^{(j)}\|_2 \tag{13}
-$$
+$$g(v; \lambda, \gamma) = -\lambda \sum_{i=1}^{N} v_i - \gamma \sum_{j=1}^{b} \|v^{(j)}\|_2 \tag{13}$$
 
 其中：
 
